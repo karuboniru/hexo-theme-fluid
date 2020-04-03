@@ -19,7 +19,11 @@ if (enable) {
 <!-- MathJax -->
 <script>
   window.MathJax = {
+    loader: {
+      load: ['input/tex-base', 'output/svg', 'ui/menu', '[tex]/newcommand','[tex]/require', '[tex]/ams', '[tex]/physics']
+    },
     tex: {
+      packages: ['base', 'require', 'ams', 'newcommand', 'physics'],
       inlineMath: [['$', '$'], ['\\(', '\\)']]
     },
     options: {
@@ -48,7 +52,7 @@ if (enable) {
   };
 </script>
 
-<%- js_ex(theme.static_prefix.mathjax, "tex-svg.js") %>
+<%- js_ex(theme.static_prefix.mathjax, "startup.js") %>
 
 <% } else if (engine === 'katex') { %>
 <!-- KaTeX -->
