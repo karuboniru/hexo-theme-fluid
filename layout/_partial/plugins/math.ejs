@@ -18,46 +18,8 @@ if (enable) {
 <% if(engine === 'mathjax') { %>
 <!-- MathJax -->
 <script>
-  MathJax = {
-    startup: {
-      requireMap: {
-        AMSmath: 'ams',
-        AMSsymbols: 'ams',
-        AMScd: 'amsCd',
-        HTML: 'html',
-        noErrors: 'noerrors',
-        noUndefined: 'noundefined'
-      },
-      ready: function () {
-        //
-        //  Replace the require command map with a new one that checks for
-        //    renamed extensions and converts them to the new names.
-        //
-        var CommandMap = MathJax._.input.tex.SymbolMap.CommandMap;
-        var requireMap = MathJax.config.startup.requireMap;
-        var RequireLoad = MathJax._.input.tex.require.RequireConfiguration.RequireLoad;
-        var RequireMethods = {
-          Require: function (parser, name) {
-            var required = parser.GetArgument(name);
-            if (required.match(/[^_a-zA-Z0-9]/) || required === '') {
-              throw new TexError('BadPackageName', 'Argument for %1 is not a valid package name', name);
-            }
-            if (requireMap.hasOwnProperty(required)) {
-              required = requireMap[required];
-            }
-            RequireLoad(parser, required);
-          }
-        };
-        new CommandMap('require', { require: 'Require' }, RequireMethods);
-
-        return MathJax.startup.defaultReady();
-      }
-    },
+  window.MathJax = {
     tex: {
-      autoload: {
-        color: [],          // don't autoload the color extension
-        colorV2: ['color'], // do autoload the colorV2 extension
-      },
       inlineMath: [['$', '$'], ['\\(', '\\)']]
     },
     options: {
