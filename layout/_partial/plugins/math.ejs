@@ -13,37 +13,96 @@ if (enable) {
 %>
 
 <% if (enable) { %>
-  <% var engine = theme.post.math.engine; %>
+<% var engine = theme.post.math.engine; %>
 
-  <% if(engine === 'mathjax') { %>
-    <!-- MathJax -->
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-          tex2jax: {
-              inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
-              processEscapes: true,
-              skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+<% if(engine === 'mathjax') { %>
+<!-- MathJax -->
+<script>
+  MathJax = {
+    startup: {
+      requireMap: {
+        AMSmath: 'ams',
+        AMSsymbols: 'ams',
+        AMScd: 'amsCd',
+        HTML: 'html',
+        noErrors: 'noerrors',
+        noUndefined: 'noundefined'
+      },
+      ready: function () {
+        //
+        //  Replace the require command map with a new one that checks for
+        //    renamed extensions and converts them to the new names.
+        //
+        var CommandMap = MathJax._.input.tex.SymbolMap.CommandMap;
+        var requireMap = MathJax.config.startup.requireMap;
+        var RequireLoad = MathJax._.input.tex.require.RequireConfiguration.RequireLoad;
+        var RequireMethods = {
+          Require: function (parser, name) {
+            var required = parser.GetArgument(name);
+            if (required.match(/[^_a-zA-Z0-9]/) || required === '') {
+              throw new TexError('BadPackageName', 'Argument for %1 is not a valid package name', name);
+            }
+            if (requireMap.hasOwnProperty(required)) {
+              required = requireMap[required];
+            }
+            RequireLoad(parser, required);
           }
-      });
-      MathJax.Hub.Register.StartupHook("End Jax",function () {
-        var BROWSER = MathJax.Hub.Browser;
-        var jax = "HTML-CSS";
-        if (BROWSER.isMSIE && BROWSER.hasMathPlayer) jax = "NativeMML";
-        return MathJax.Hub.setRenderer(jax);
-      });
-      MathJax.Hub.Queue(function() {
-          var all = MathJax.Hub.getAllJax(), i;
-          for(i=0; i < all.length; i += 1) {
-              all[i].SourceElement().parentNode.className += ' has-jax';
-          }
-      });
+        };
+        new CommandMap('require', { require: 'Require' }, RequireMethods);
 
-    </script>
+        return MathJax.startup.defaultReady();
+      }
+    },
+    tex: {
+      autoload: {
+        color: [],          // don't autoload the color extension
+        colorV2: ['color'], // do autoload the colorV2 extension
+      },
+      inlineMath: [['$', '$'], ['\\(', '\\)']]
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+            const display = !!node.type.match(/; *mode=display/);
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+            const text = document.createTextNode('');
+            node.parentNode.replaceChild(text, node);
+            math.start = { node: text, delim: '', n: 0 };
+            math.end = { node: text, delim: '', n: 0 };
+            doc.math.push(math);
+          });
+        }, '', false],
+        insertedScript: [200, () => {
+          document.querySelectorAll('mjx-container').forEach(node => {
+            let target = node.parentNode;
+            if (target.nodeName.toLowerCase() === 'li') {
+              target.parentNode.classList.add('has-jax');
+            }
+          });
+        }, '', false]
+      }
+    }
+  };
+</script>
 
-    <%- js_ex(theme.static_prefix.mathjax, "MathJax.js?config=TeX-MML-AM_CHTML") %>
+<%- js_ex(theme.static_prefix.mathjax, "tex-svg.js") %>
 
-  <% } else if (engine === 'katex') { %>
-    <!-- KaTeX -->
-    <%- css_ex(theme.static_prefix.katex, "katex.min.css") %>
-  <% } %>
+<script>
+  let observer = new MutationObserver(function (event) {
+    MathJax.typeset();
+  });
+  let article = document.body;
+
+  let options = {
+    'subtree': true,
+    'attributes': true
+  };
+  observer.observe(article, options);
+</script>
+
+<% } else if (engine === 'katex') { %>
+<!-- KaTeX -->
+<%- css_ex(theme.static_prefix.katex, "katex.min.css") %>
+<% } %>
 <% } %>
