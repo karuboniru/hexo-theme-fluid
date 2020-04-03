@@ -4,8 +4,10 @@
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.6.2/gitalk.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.13.0/js/md5.min.js"></script>
   <script type="text/javascript">
-    var oldLoad = window.onload;
+    var oldLoadGt = window.onload;
     window.onload = function () {
+      oldLoadGt && oldLoadGt();
+
       var gitalk = new Gitalk({
         clientID: '<%- theme.gitalk.clientID %>',
         clientSecret: '<%- theme.gitalk.clientSecret %>',
@@ -19,9 +21,7 @@
         createIssueManually: '<%- theme.gitalk.createIssueManually %>',
         distractionFreeMode: '<%- theme.gitalk.distractionFreeMode %>'
       });
-
       gitalk.render('gitalk-container')
-      oldLoad && oldLoad();
     }
   </script>
 <% } %>
