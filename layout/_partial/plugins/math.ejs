@@ -18,7 +18,7 @@ if (enable) {
 <% if(engine === 'mathjax') { %>
 <!-- MathJax -->
 <script>
-  window.MathJax = {
+  MathJax = {
     loader: {
       load: ['input/tex-base', 'output/svg', 'ui/menu', '[tex]/newcommand','[tex]/require', '[tex]/ams', '[tex]/physics']
     },
@@ -52,7 +52,7 @@ if (enable) {
   };
 </script>
 
-<%- js_ex(theme.static_prefix.mathjax, "startup.js") %>
+<%- js_ex(theme.static_prefix.mathjax, "tex-svg.js") %>
 
 <% } else if (engine === 'katex') { %>
 <!-- KaTeX -->
