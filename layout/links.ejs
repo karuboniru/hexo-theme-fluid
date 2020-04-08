@@ -28,6 +28,10 @@ page.banner_img_height = theme.links.banner_img_height
   <% } %>
 </div>
 
+<div class="mt-5 markdown-body">
+  <%- page.content %>
+</div>
+
 <div class="comments" id="comments">
   <% var type = '_partial/comments/' + theme.post.comments.type %>
   <%- partial(type) %>
