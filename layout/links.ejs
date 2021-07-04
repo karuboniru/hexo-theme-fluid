@@ -29,6 +29,10 @@ page.banner_mask_alpha = theme.links.banner_mask_alpha
   <% } %>
 </div>
 
+<div class="mt-5 markdown-body">
+  <%- page.content %>
+</div>
+
 <% if(theme.links.custom.enable && theme.links.custom.content) { %>
   <!-- Custom -->
   <div class="custom mx-auto">
@@ -43,3 +47,8 @@ page.banner_mask_alpha = theme.links.banner_mask_alpha
     <%- partial(type) %>
   </article>
 <% } %>
+
+<div class="comments" id="comments">
+  <% var type='_partial/comments/' + theme.post.comments.type %>
+    <%- partial(type) %>
+</div>
