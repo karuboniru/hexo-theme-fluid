@@ -30,6 +30,10 @@ page.comment = theme.links.comments.type
   <% } %>
 </div>
 
+<div class="mt-5 markdown-body">
+  <%- page.content %>
+</div>
+
 <% if(theme.links.custom && theme.links.custom.enable && theme.links.custom.content) { %>
   <!-- Custom -->
   <div class="custom mx-auto">
