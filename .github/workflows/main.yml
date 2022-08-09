@@ -1,0 +1,41 @@
+# This is a basic workflow to help you get started with Actions
+
+name: update blog-ci
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Runs a set of commands using the runners shell
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: true # Checkout private submodules(themes or something else).
+        repository: karuboniru/blog_ci
+        
+    - name: update blog-ci
+      run: |
+        cd themes
+        rm -rf fluid
+        git clone https://github.com/karuboniru/hexo-theme-fluid.git fluid
+        cd ../..
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v3.8.2
+      with:
+        delete-branch: true
+        branch: hexo-theme-fluid/update
+        token: ${{ secrets.GH_TOKEN }}
+        
+        
